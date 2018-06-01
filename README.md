@@ -33,7 +33,7 @@ This is all experimental and not for prodcution use.
 
 ## Result
 
-As you can see from the output, Prepack was able to fully compile away React and ReactDOM. That includes all the React components, helper functions, virtual DOM and other React abstractions.
+As you can see from the output, Prepack was able to **fully compile away React and ReactDOM**. That includes all the React components, helper functions, virtual DOM and other React abstractions. All we're left with is strings, loops and conditions (plus some helper functions to deal with things that were unknown at build time).
 
 The [rendered output](https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e) looks like this:
 
