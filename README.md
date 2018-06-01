@@ -2,7 +2,10 @@
 
 ## Summary
 
-This was an experiment to see the performance of React + ReactDOMServer using `renderToString` vs Prepack's React compiler on the same sourcecode. 
+This was an experiment to see the performance of React + ReactDOMServer using `renderToString` vs [Prepack](https://github.com/facebook/prepack)'s React compiler on the same sourcecode.
+
+This is using the full power of Prepack, a tool that can optimize JavaScript code ahead-of-time. The React and Prepack teams have been busy building in the full knowledge of all the different parts of React's engine and its abstractions to Prepack so it's able to compile and optimize React applications.
+
 In this benchmark we're measuring the time to emit the HTML string via Node. The compiled version does not take in the data source, instead that is
 supplied at runtime.
 
@@ -29,6 +32,8 @@ To get compile the sourcecode locally:
 This is all experimental and not for prodcution use.
 
 ## Result
+
+As you can see from the output, Prepack was able to fully compile away React and ReactDOM. That includes all the React components, helper functions, virtual DOM and other React abstractions.
 
 The [rendered output](https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e) looks like this:
 
