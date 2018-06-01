@@ -1,0 +1,16 @@
+{
+  "name": "server-render-hn",
+  "version": "1.0.0",
+  "description": "ReactDOMServer + experimental Prepack (React) compiler",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js && node compiled.js"
+  },
+  "author": "Dominic Gannaway",
+  "license": "MIT",
+  "dependencies": {
+    "prop-types": "^15.6.1",
+    "react": "^16.4",
+    "react-dom": "^16.4"
+  }
+}
