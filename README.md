@@ -28,11 +28,13 @@ To get compile the sourcecode locally:
 
 This is all experimental and not for prodcution use.
 
-## Results:
+## Result
 
 The [rendered output](https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e) looks like this:
 
 ![Rendered output with Prepack](https://raw.githubusercontent.com/trueadm/server-render-hn/master/example.jpg)
+
+## Performance
 
 - HN benchmark with ReactDOMServer 16.4: **13.093ms**
 - HN benchmark compiled with Prepack master as of today: **0.245ms** (not a typo)
