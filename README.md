@@ -30,6 +30,7 @@ This is all experimental and not for prodcution use.
 
 ## Results:
 
-- HN benchmark with ReactDOMServer 16.4: 13.093ms 
-- HN benchmark compiled with Prepack master as of today: 0.245ms (not a typo)
+- HN benchmark with ReactDOMServer 16.4: **13.093ms**
+- HN benchmark compiled with Prepack master as of today: **0.245ms** (not a typo)
+
 (Node 8.9.4 for both, best of 4 runs, excluding startup costs on a MacBook Pro 2017 model)
