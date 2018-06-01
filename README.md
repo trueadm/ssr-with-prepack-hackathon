@@ -32,7 +32,7 @@ This is all experimental and not for prodcution use.
 
 The [rendered output](https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e) looks like this:
 
-https://scontent-lht6-1.xx.fbcdn.net/v/t1.0-9/34033188_394989471005882_6414611343944450048_o.jpg?_nc_cat=0&oh=bd331c084950681b55938627e3101a88&oe=5BBD61AF
+
 
 - HN benchmark with ReactDOMServer 16.4: **13.093ms**
 - HN benchmark compiled with Prepack master as of today: **0.245ms** (not a typo)
