@@ -2,13 +2,13 @@
 
 _Note: Prepack is still experimental and not ready for production use_
 
-## Summary
-
 Around two weeks ago, as part of a 2 day hackathon, I wanted to see if it was possible to build on top of our work on [Prepack](https://github.com/facebook/prepack) and ahead-of-time compile a React app, optimized for server-side rendering only. My goal was to see if it was possible to eliminate React completely from the bundle and generate a simple JS file with the minimal logic necessary to render the HTML.
 
 To keep my scope for this hackathon small, I aimed solely to get on getting our existing Hacker News benchmark, written in React, to have 100% the same HTML output the non-compiled version generates.
 
 To build this project, I copy and pasted parts of the current React implementation of ReactDOMServer, modifying the code to work with Prepack's internal object/value model – in particular, with the concept of values being "abstract" and unknown at build time. I used the existing React compiler rendering logic we built in Prepack, and added to it: we already have a “firstRender” mode that strips event handlers and update logic from components; I had Prepack feed that result into my renderer when detecting a "ReactDOMServer.renderToString" method call.
+
+When an abstract/unknown value needs to appears in the output (either as props on a HTML element or as an HTML child), I decided to have Prepack inject runtime helpers – specifically a "escapeHTML" helper function to embed strings safely safe. Furthermore, the Hacker News benchmark I was using has a loop for a collection of items in the list that it has to render – so I also made a helper to deal with array collections (we have logic that adds in <!— --> comments between adjacent text nodes to ensure we can hydrate from the server-renderer content correctly).
 
 ## Results
 
