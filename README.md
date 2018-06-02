@@ -1,26 +1,44 @@
-# React Hacker News benchmark with experimental React compiler (Prepack)
+# Hackathon Project: Rendering React to HTML at build time with Prepack
+
+_Note: Prepack is still experimental and not ready for production use_
 
 ## Summary
 
-This was an experiment to see the performance of React + ReactDOMServer using `renderToString` vs [Prepack](https://github.com/facebook/prepack)'s React compiler on the same sourcecode.
+Around two weeks ago, as part of a 2 day hackathon, I wanted to see if it was possible to build on top of our work on [Prepack](https://github.com/facebook/prepack) and ahead-of-time compile a React app, optimized for server-side rendering only. My goal was to see if it was possible to eliminate React completely from the bundle and generate a simple JS file with the minimal logic necessary to render the HTML.
 
-This is using the full power of Prepack, a tool that can optimize JavaScript code ahead-of-time. The React and Prepack teams have been busy building in the full knowledge of all the different parts of React's engine and its abstractions to Prepack so it's able to compile and optimize React applications.
+To keep my scope for this hackathon small, I aimed solely to get on getting our existing Hacker News benchmark, written in React, to have 100% the same HTML output the non-compiled version generates.
 
-In this benchmark we're measuring the time to emit the HTML string via Node. The compiled version does not take in the data source, instead that is
-supplied at runtime.
+To build this project, I copy and pasted parts of the current React implementation of ReactDOMServer, modifying the code to work with Prepack's internal object/value model – in particular, with the concept of values being "abstract" and unknown at build time. I used the existing React compiler rendering logic we built in Prepack, and added to it: we already have a “firstRender” mode that strips event handlers and update logic from components; I had Prepack feed that result into my renderer when detecting a "ReactDOMServer.renderToString" method call.
 
-Using the Hacker News benchmark sourcecode located in the Prepack repo:
-https://github.com/facebook/prepack/blob/master/test/react/server-rendering/hacker-news.js
+## Results
 
-Hacker News JSON data:
-https://github.com/facebook/prepack/blob/master/test/react/server-rendering/hacker-news.json
+After around two days, and after adding many TODO comments and invariants into the renderer (implementing the bare minimum needed to get the benchmark working), the output from the compiled version 100% matched that out of the non-compiled version. In this example, **React and ReactDOMServer are completely compiled away** leaving simple HTML strings with holes for the dynamic data. There's no virtual DOM, components, or other React abstractions.
 
-Prepack settings used in this experiment:
-https://github.com/facebook/prepack/blob/master/scripts/debug-fb-www.js#L53-L81
+![Rendered output with Prepack](https://raw.githubusercontent.com/trueadm/server-render-hn/master/example.jpg)
+
+- Full benchmark source: https://github.com/facebook/prepack/blob/master/test/react/server-rendering/hacker-news.js
+- Compiled output with these optimizations: https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e
+- Prepack settings used in this experiment: https://github.com/facebook/prepack/blob/master/scripts/debug-fb-www.js#L53-L81
+
+All of this was made possible by the progress we've made with Prepack and how much it's capable of handling now. We still have a lot of work to go and this experimental ReactDOMServer renderer in Prepack is by no means usable (it's full of TODOs and hasn't been tested on anything other than this benchmark!). 
+
+## Performance
+
+Even though I made zero attempt on optimizing the output, I thought I'd run a bunch of benchmarks on the output using NodeJS to see how well the compiled output performed compared to the non-compiled output. The results are pretty shocking, but please note that this is a tiny benchmark so these results are not necessarily representative of real-world apps. Please also note, in this benchmark we're measuring the time to emit the HTML string via Node – not the time to render it to the browser/client. The compiled version does not take in the JSON data source at compile time, all the JSON is processed at runtime like in a normal app.
+
+- HN benchmark with ReactDOMServer 16.4: **13.093ms**
+- HN benchmark compiled with Prepack master as of today: **0.245ms** (not a typo)
+
+(Node 8.9.4 for both, best of 4 runs, excluding startup costs on a MacBook Pro 2017 model)
+
+## Summary
+
+The project is purely an experiment to see what is possible with Prepack. Given the results and the relatively short time it took to put this experiment together it really does show the power of Prepack as a platform. Putting this all together without Prepack would have been virtually impossible, let alone in the space of a hackathon project. The Prepack and React teams are still working closely together on correctness for Prepack and general compilation efforts but there's definitely a lot of potential here.
 
 ## Setup guide
 
-To get compile the sourcecode locally:
+If you'd like to run the benchmark or play with Prepack locally, here's how you can set it up:
+
 - Checkout [Prepack](https://github.com/facebook/prepack) locally
 - `yarn build` in the root of the Prepack directory
 - Create an empty JS file at `${PREPACK_ROOT}/fb-www/input.js`
@@ -29,19 +47,4 @@ To get compile the sourcecode locally:
 - Run the command `yarn debug-fb-www`. This is a script that will run Prepack with the React options enabled on `input.js`
 - The compiled output will be in `output.js`
 
-This is all experimental and not for prodcution use.
-
-## Result
-
-As you can see from the output, Prepack was able to **fully compile away React and ReactDOM**. That includes all the React components, helper functions, virtual DOM and other React abstractions. All we're left with is strings, loops and conditions (plus some helper functions to deal with things that were unknown at build time).
-
-The [rendered output](https://gist.github.com/trueadm/f1692ff635fb666876dcd3f9879a5e1e) looks like this:
-
-![Rendered output with Prepack](https://raw.githubusercontent.com/trueadm/server-render-hn/master/example.jpg)
-
-## Performance
-
-- HN benchmark with ReactDOMServer 16.4: **13.093ms**
-- HN benchmark compiled with Prepack master as of today: **0.245ms** (not a typo)
-
-(Node 8.9.4 for both, best of 4 runs, excluding startup costs on a MacBook Pro 2017 model)
+This is all experimental and not for prodcution use, so expect bugs and things not working.
