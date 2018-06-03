@@ -47,4 +47,4 @@ If you'd like to run the benchmark or play with Prepack locally, here's how you 
 - Run the command `yarn debug-fb-www`. This is a script that will run Prepack with the React options enabled on `input.js`
 - The compiled output will be in `output.js`
 
-This is all experimental and not for prodcution use, so expect bugs and things not working.
+This is all experimental and not for production use, so expect bugs and things not working.
